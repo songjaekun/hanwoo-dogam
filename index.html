@@ -206,14 +206,16 @@ nav.tabs button[aria-current="page"]{color:color-mix(in srgb,var(--accent) 85%,v
 /* ---- PC (1100px~) : 왼쪽 메뉴 ---- */
 @media (min-width:1100px){
   body{font-size:15px}
-  .wrap{max-width:1280px;padding-left:calc(212px + max(24px,env(safe-area-inset-left,0px)));padding-right:max(32px,env(safe-area-inset-right,0px));padding-block:0 40px}
+  .wrap{max-width:none;padding-left:calc(212px + max(28px,env(safe-area-inset-left,0px)));padding-right:max(32px,env(safe-area-inset-right,0px));padding-block:0 40px}
   nav.tabs{top:0;bottom:0;right:auto;width:196px;border-top:0;border-radius:0;box-shadow:none;background:var(--surface);border-right:1px solid var(--line);padding-top:calc(env(safe-area-inset-top,0px) + 76px);padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:12px}
   nav.tabs .in{display:flex;flex-direction:column;gap:4px;max-width:none}
   nav.tabs button{flex-direction:row;justify-content:flex-start;gap:12px;padding:11px 14px;border-radius:10px;font-size:15px}
   nav.tabs button[aria-current="page"]{background:var(--accent-soft)}
   nav.tabs button:hover{background:var(--bg)}
   .brand .mark{height:36px}.brand .word{height:29px}
-  .stockgrid{grid-template-columns:320px 1fr;gap:28px}
+  .stockgrid{grid-template-columns:360px 1fr;gap:28px}
+  .lots{grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}
+  form.card,.photoin{max-width:none}
   .toast{bottom:calc(28px + env(safe-area-inset-bottom,0px))}
   table{font-size:14px}
   th,td{padding:9px 10px}
