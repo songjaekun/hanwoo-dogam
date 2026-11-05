@@ -1,0 +1,9 @@
+{
+  "name": "한우도감 재고장부",
+  "short_name": "한우도감",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F4F5F8",
+  "theme_color": "#18243D",
+  "icons": [{ "src": "/icon.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }]
+}
