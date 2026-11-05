@@ -1,6 +1,6 @@
 // 한우도감 재고장부 — 데이터 API
 // 저장: Vercel Blob(비공개) 의 db.json 하나. 동시에 저장해도 덮어쓰지 않도록 ETag(ifMatch)로 확인 후 다시 시도.
-import { get, put, BlobPreconditionFailedError } from "@vercel/blob";
+import { get, put, BlobPreconditionFailedError, BlobNotFoundError } from "@vercel/blob";
 import crypto from "node:crypto";
 
 const PATH = "hanwoo/db.json";
@@ -14,7 +14,15 @@ function pinOk(req) {
 }
 
 async function load() {
-  const r = await get(PATH, { access: "private", useCache: false });
+  if (!process.env.BLOB_READ_WRITE_TOKEN && !process.env.BLOB_STORE_ID) throw new Error("NO_BLOB");
+  let r = null;
+  try {
+    r = await get(PATH, { access: "private", useCache: false });
+  } catch (e) {
+    // 처음엔 db.json이 없음 → 빈 장부로 시작
+    if (e instanceof BlobNotFoundError || /not.?found|does not exist/i.test(String(e && e.message))) r = null;
+    else throw e;
+  }
   if (!r || r.statusCode !== 200) return { data: { lots: {}, outs: {} }, etag: null };
   const text = await new Response(r.stream).text();
   const data = JSON.parse(text || "{}");
@@ -101,6 +109,8 @@ export default async function handler(req, res) {
   } catch (e) {
     if (e instanceof UserError) return res.status(e.status).json({ error: e.message });
     console.error(e);
-    return res.status(500).json({ error: "서버 오류가 났어요. 잠시 후 다시 해 주세요" });
+    if (String(e && e.message) === "NO_BLOB") return res.status(500).json({ error: "저장소가 연결되지 않았어요. Vercel에서 재배포해 주세요" });
+    const code = String((e && (e.name || e.code)) || "Error").slice(0, 40);
+    return res.status(500).json({ error: `서버 오류가 났어요 (${code}: ${String(e && e.message || "").slice(0, 80)})` });
   }
 }
